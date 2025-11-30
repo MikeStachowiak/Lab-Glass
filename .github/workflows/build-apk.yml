@@ -24,27 +24,21 @@ jobs:
     - name: Setup Flutter
       uses: subosito/flutter-action@v2
       with:
-        flutter-version: '3.19.0'
+        flutter-version: '3.16.0'
         channel: 'stable'
         cache: true
-
-    - name: Print Flutter info
-      run: |
-        flutter --version
-        echo "FLUTTER_ROOT: $FLUTTER_ROOT"
-        which flutter
 
     - name: Create local.properties
       run: |
         echo "sdk.dir=$ANDROID_HOME" > android/local.properties
-        echo "flutter.sdk=$(dirname $(dirname $(which flutter)))" >> android/local.properties
+        echo "flutter.sdk=$FLUTTER_ROOT" >> android/local.properties
         cat android/local.properties
 
     - name: Get dependencies
       run: flutter pub get
 
     - name: Build APK (Debug)
-      run: flutter build apk --debug --verbose
+      run: flutter build apk --debug
 
     - name: Upload Debug APK
       uses: actions/upload-artifact@v4
