@@ -6,7 +6,7 @@ import 'package:permission_handler/permission_handler.dart';
 import '../models/glasses_device.dart';
 import '../utils/glasses_protocol.dart';
 
-enum ConnectionState {
+enum BleConnectionState {
   disconnected,
   scanning,
   connecting,
@@ -24,8 +24,8 @@ class BleService extends ChangeNotifier {
   static const String notifyCharUuid = "0000ae02-0000-1000-8000-00805f9b34fb";
   static const String videoCharUuid = "0000ae31-0000-1000-8000-00805f9b34fb";
 
-  ConnectionState _connectionState = ConnectionState.disconnected;
-  ConnectionState get connectionState => _connectionState;
+  BleConnectionState _connectionState = BleBleConnectionState.disconnected;
+  BleConnectionState get connectionState => _connectionState;
 
   final List<GlassesDevice> _discoveredDevices = [];
   List<GlassesDevice> get discoveredDevices => _discoveredDevices;
@@ -84,7 +84,7 @@ class BleService extends ChangeNotifier {
     FlutterBluePlus.adapterState.listen((state) {
       if (state == BluetoothAdapterState.off) {
         _statusMessage = 'Bluetooth is OFF';
-        _connectionState = ConnectionState.disconnected;
+        _connectionState = BleConnectionState.disconnected;
         notifyListeners();
       }
     });
@@ -116,7 +116,7 @@ class BleService extends ChangeNotifier {
     }
 
     _discoveredDevices.clear();
-    _connectionState = ConnectionState.scanning;
+    _connectionState = BleConnectionState.scanning;
     _statusMessage = 'Scanning for glasses...';
     notifyListeners();
 
@@ -165,7 +165,7 @@ class BleService extends ChangeNotifier {
     );
 
     // After scan completes
-    _connectionState = ConnectionState.disconnected;
+    _connectionState = BleConnectionState.disconnected;
     _statusMessage = '${_discoveredDevices.length} devices found';
     notifyListeners();
   }
@@ -173,13 +173,13 @@ class BleService extends ChangeNotifier {
   Future<void> stopScan() async {
     await FlutterBluePlus.stopScan();
     _scanSubscription?.cancel();
-    _connectionState = ConnectionState.disconnected;
+    _connectionState = BleConnectionState.disconnected;
     notifyListeners();
   }
 
   Future<void> connectToDevice(BluetoothDevice device) async {
     try {
-      _connectionState = ConnectionState.connecting;
+      _connectionState = BleConnectionState.connecting;
       _statusMessage = 'Connecting to ${device.platformName}...';
       notifyListeners();
 
@@ -188,7 +188,7 @@ class BleService extends ChangeNotifier {
 
       // Listen for disconnection
       _connectionSubscription = device.connectionState.listen((state) {
-        if (state == BluetoothConnectionState.disconnected) {
+        if (state == BluetoothBleConnectionState.disconnected) {
           _handleDisconnection();
         }
       });
@@ -230,7 +230,7 @@ class BleService extends ChangeNotifier {
         );
       }
 
-      _connectionState = ConnectionState.connected;
+      _connectionState = BleConnectionState.connected;
       _statusMessage = 'Connected to ${device.platformName}';
       notifyListeners();
 
@@ -242,7 +242,7 @@ class BleService extends ChangeNotifier {
 
     } catch (e) {
       _statusMessage = 'Connection failed: $e';
-      _connectionState = ConnectionState.disconnected;
+      _connectionState = BleConnectionState.disconnected;
       notifyListeners();
     }
   }
@@ -255,7 +255,7 @@ class BleService extends ChangeNotifier {
     _connectionSubscription?.cancel();
     _notifySubscription?.cancel();
     _videoSubscription?.cancel();
-    _connectionState = ConnectionState.disconnected;
+    _connectionState = BleConnectionState.disconnected;
     _statusMessage = 'Disconnected';
     notifyListeners();
   }
@@ -401,7 +401,7 @@ class BleService extends ChangeNotifier {
         },
       );
 
-      _connectionState = ConnectionState.streaming;
+      _connectionState = BleConnectionState.streaming;
       _statusMessage = 'Video streaming...';
       notifyListeners();
     } catch (e) {
@@ -419,7 +419,7 @@ class BleService extends ChangeNotifier {
     );
     await _sendCommand(cmd);
 
-    _connectionState = ConnectionState.connected;
+    _connectionState = BleConnectionState.connected;
     _statusMessage = 'Stream stopped';
     notifyListeners();
   }
@@ -440,5 +440,8 @@ class BleService extends ChangeNotifier {
     super.dispose();
   }
 }
+
+
+
 
 

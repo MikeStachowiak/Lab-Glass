@@ -24,7 +24,7 @@ class DeviceScreen extends StatelessWidget {
         child: SafeArea(
           child: Consumer<BleService>(
             builder: (context, bleService, _) {
-              if (bleService.connectionState == ConnectionState.disconnected) {
+              if (bleService.connectionState == BleConnectionState.disconnected) {
                 WidgetsBinding.instance.addPostFrameCallback((_) {
                   Navigator.of(context).pop();
                 });
@@ -570,5 +570,8 @@ class DeviceScreen extends StatelessWidget {
     );
   }
 }
+
+
+
 
 

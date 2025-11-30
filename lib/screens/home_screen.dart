@@ -58,7 +58,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                   _buildHeader(bleService),
                   _buildStatusBar(bleService),
                   Expanded(
-                    child: bleService.connectionState == ConnectionState.scanning
+                    child: bleService.connectionState == BleConnectionState.scanning
                         ? _buildScanningView()
                         : _buildDeviceList(bleService),
                   ),
@@ -81,7 +81,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
             animation: _pulseAnimation,
             builder: (context, child) {
               return Transform.scale(
-                scale: bleService.connectionState == ConnectionState.connected
+                scale: bleService.connectionState == BleConnectionState.connected
                     ? _pulseAnimation.value
                     : 1.0,
                 child: Container(
@@ -89,12 +89,12 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                   height: 56,
                   decoration: BoxDecoration(
                     gradient: LinearGradient(
-                      colors: bleService.connectionState == ConnectionState.connected
+                      colors: bleService.connectionState == BleConnectionState.connected
                           ? [const Color(0xFF00E5FF), const Color(0xFF00B4D8)]
                           : [const Color(0xFF2A2A3A), const Color(0xFF1A1A24)],
                     ),
                     borderRadius: BorderRadius.circular(16),
-                    boxShadow: bleService.connectionState == ConnectionState.connected
+                    boxShadow: bleService.connectionState == BleConnectionState.connected
                         ? [
                             BoxShadow(
                               color: const Color(0xFF00E5FF).withOpacity(0.4),
@@ -139,7 +139,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
               ],
             ),
           ),
-          if (bleService.connectionState == ConnectionState.connected)
+          if (bleService.connectionState == BleConnectionState.connected)
             _buildBatteryIndicator(bleService),
         ],
       ),
@@ -192,8 +192,8 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
       ),
       child: Row(
         children: [
-          if (bleService.connectionState == ConnectionState.scanning ||
-              bleService.connectionState == ConnectionState.connecting)
+          if (bleService.connectionState == BleConnectionState.scanning ||
+              bleService.connectionState == BleConnectionState.connecting)
             const SizedBox(
               width: 16,
               height: 16,
@@ -254,7 +254,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
             } else {
               // Connect to device
               await bleService.connectToDevice(device.device);
-              if (bleService.connectionState == ConnectionState.connected && mounted) {
+              if (bleService.connectionState == BleConnectionState.connected && mounted) {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
@@ -321,28 +321,28 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
         children: [
           Expanded(
             child: ElevatedButton.icon(
-              onPressed: bleService.connectionState == ConnectionState.scanning
+              onPressed: bleService.connectionState == BleConnectionState.scanning
                   ? () => bleService.stopScan()
                   : () => bleService.startScan(),
               icon: Icon(
-                bleService.connectionState == ConnectionState.scanning
+                bleService.connectionState == BleConnectionState.scanning
                     ? Icons.stop
                     : Icons.radar,
               ),
               label: Text(
-                bleService.connectionState == ConnectionState.scanning
+                bleService.connectionState == BleConnectionState.scanning
                     ? 'STOP SCAN'
                     : 'SCAN',
               ),
               style: ElevatedButton.styleFrom(
-                backgroundColor: bleService.connectionState == ConnectionState.scanning
+                backgroundColor: bleService.connectionState == BleConnectionState.scanning
                     ? const Color(0xFFFF0080)
                     : const Color(0xFF00E5FF),
                 padding: const EdgeInsets.symmetric(vertical: 16),
               ),
             ),
           ),
-          if (bleService.connectionState == ConnectionState.connected) ...[
+          if (bleService.connectionState == BleConnectionState.connected) ...[
             const SizedBox(width: 16),
             ElevatedButton(
               onPressed: () {
@@ -367,34 +367,37 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
     );
   }
 
-  String _getConnectionStatusText(ConnectionState state) {
+  String _getConnectionStatusText(BleConnectionState state) {
     switch (state) {
-      case ConnectionState.disconnected:
+      case BleConnectionState.disconnected:
         return 'DISCONNECTED';
-      case ConnectionState.scanning:
+      case BleConnectionState.scanning:
         return 'SCANNING...';
-      case ConnectionState.connecting:
+      case BleConnectionState.connecting:
         return 'CONNECTING...';
-      case ConnectionState.connected:
+      case BleConnectionState.connected:
         return 'CONNECTED';
-      case ConnectionState.streaming:
+      case BleConnectionState.streaming:
         return 'STREAMING';
     }
   }
 
-  Color _getConnectionStatusColor(ConnectionState state) {
+  Color _getConnectionStatusColor(BleConnectionState state) {
     switch (state) {
-      case ConnectionState.disconnected:
+      case BleConnectionState.disconnected:
         return Colors.white38;
-      case ConnectionState.scanning:
+      case BleConnectionState.scanning:
         return const Color(0xFFFF0080);
-      case ConnectionState.connecting:
+      case BleConnectionState.connecting:
         return const Color(0xFFFFAA00);
-      case ConnectionState.connected:
-      case ConnectionState.streaming:
+      case BleConnectionState.connected:
+      case BleConnectionState.streaming:
         return const Color(0xFF00E5FF);
     }
   }
 }
+
+
+
 
 

@@ -133,7 +133,7 @@ class _VideoStreamScreenState extends State<VideoStreamScreen>
   }
 
   Widget _buildVideoArea(BleService bleService) {
-    if (bleService.connectionState == ConnectionState.streaming &&
+    if (bleService.connectionState == BleConnectionState.streaming &&
         _currentFrame != null) {
       return Image.memory(
         _currentFrame!,
@@ -148,7 +148,7 @@ class _VideoStreamScreenState extends State<VideoStreamScreen>
   }
 
   Widget _buildPlaceholder(BleService bleService) {
-    final isStreaming = bleService.connectionState == ConnectionState.streaming;
+    final isStreaming = bleService.connectionState == BleConnectionState.streaming;
     
     return Container(
       decoration: BoxDecoration(
@@ -273,7 +273,7 @@ class _VideoStreamScreenState extends State<VideoStreamScreen>
                         height: 8,
                         decoration: BoxDecoration(
                           color: bleService.connectionState ==
-                                  ConnectionState.streaming
+                                  BleConnectionState.streaming
                               ? const Color(0xFFFF4444)
                               : const Color(0xFF4A4A5A),
                           shape: BoxShape.circle,
@@ -281,14 +281,14 @@ class _VideoStreamScreenState extends State<VideoStreamScreen>
                       ),
                       const SizedBox(width: 8),
                       Text(
-                        bleService.connectionState == ConnectionState.streaming
+                        bleService.connectionState == BleConnectionState.streaming
                             ? 'LIVE'
                             : 'OFFLINE',
                         style: TextStyle(
                           fontSize: 10,
                           letterSpacing: 1,
                           color: bleService.connectionState ==
-                                  ConnectionState.streaming
+                                  BleConnectionState.streaming
                               ? const Color(0xFFFF4444)
                               : Colors.white38,
                         ),
@@ -333,7 +333,7 @@ class _VideoStreamScreenState extends State<VideoStreamScreen>
   }
 
   Widget _buildBottomControls(BuildContext context, BleService bleService) {
-    final isStreaming = bleService.connectionState == ConnectionState.streaming;
+    final isStreaming = bleService.connectionState == BleConnectionState.streaming;
 
     return Positioned(
       bottom: 0,
@@ -457,5 +457,8 @@ class _VideoStreamScreenState extends State<VideoStreamScreen>
     );
   }
 }
+
+
+
 
 
