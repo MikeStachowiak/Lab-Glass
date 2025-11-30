@@ -28,25 +28,20 @@ jobs:
         channel: 'stable'
         cache: true
 
+    - name: Create local.properties
+      run: |
+        echo "sdk.dir=$ANDROID_HOME" > android/local.properties
+        echo "flutter.sdk=$FLUTTER_ROOT" >> android/local.properties
+
     - name: Get dependencies
       run: flutter pub get
-
-    - name: Build APK (Release)
-      run: flutter build apk --release
 
     - name: Build APK (Debug)
       run: flutter build apk --debug
 
-    - name: Upload Release APK
-      uses: actions/upload-artifact@v4
-      with:
-        name: smart-glasses-release-apk
-        path: build/app/outputs/flutter-apk/app-release.apk
-        retention-days: 30
-
     - name: Upload Debug APK
       uses: actions/upload-artifact@v4
       with:
-        name: smart-glasses-debug-apk
+        name: smart-glasses-app
         path: build/app/outputs/flutter-apk/app-debug.apk
         retention-days: 30
